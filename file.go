@@ -3,11 +3,10 @@ package packd
 import (
 	"bytes"
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
 	"os"
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 var _ File = &virtualFile{}
@@ -27,8 +26,11 @@ func (f virtualFile) Name() string {
 }
 
 func (f *virtualFile) Seek(offset int64, whence int) (int64, error) {
-	if offset == 0 && whence == io.SeekStart {
-		f.buf = bytes.NewBuffer(f.original)
+	if whence == io.SeekStart {
+		if offset >= f.info.size {
+			return -1, errors.New("Cannot seek beyond the end of the file")
+		}
+		f.buf = bytes.NewBuffer(f.original[offset:])
 		return 0, nil
 	}
 	return -1, errors.New("Unsuported Seek operation")

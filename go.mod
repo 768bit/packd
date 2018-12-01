@@ -1,4 +1,4 @@
-module github.com/gobuffalo/packd
+module github.com/768bit/packd
 
 require (
 	github.com/gobuffalo/syncx v0.0.0-20181120191700-98333ab04150
