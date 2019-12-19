@@ -29,8 +29,11 @@ func (f *virtualFile) Seek(offset int64, whence int) (int64, error) {
 	if whence == io.SeekStart {
 		if offset >= f.info.size {
 			return -1, errors.New("Cannot seek beyond the end of the file")
+		} else if offset == 0 {
+			f.buf = bytes.NewBuffer(f.original)
+		} else {
+			f.buf = bytes.NewBuffer(f.original[offset:])
 		}
-		f.buf = bytes.NewBuffer(f.original[offset:])
 		return 0, nil
 	}
 	return -1, errors.New("Unsuported Seek operation")
